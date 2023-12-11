@@ -9,30 +9,36 @@
 #include <WString.h>
 #include <Print.h>
 #include "definitions.h"
-#include "OBDSerialComm.h"
+#include "OBDSerialCommBT.h"
 
 class PidProcessor {
 
 public:
 
-    PidProcessor(OBDSerialComm *connection);
+    PidProcessor(OBDSerialCommBT *connection);
 
     bool process(String string);
 
     bool registerMode01Pid(uint32_t pid);
 
+    bool registerMode03Response(String response);
+
     void writePidResponse(String requestPid, uint8_t numberOfBytes, uint32_t value);
 
 private:
 
-    OBDSerialComm *_connection;
+    OBDSerialCommBT *_connection;
+    
     uint32_t pidMode01Supported[N_MODE01_INTERVALS];
+
+    String dtcResponse;
 
     bool isSupportedPidRequest(uint8_t pid);
 
     uint32_t getSupportedPids(uint8_t pidcode);
 
     bool isMode01(String command);
+    bool isMode03(String command);
 
     uint8_t getPidIntervalId(uint8_t pidcode);
 
