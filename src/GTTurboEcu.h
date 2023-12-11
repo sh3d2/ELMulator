@@ -4,6 +4,7 @@
 #include <Arduino.h>
 
 #include "elm327/OBDSerialComm.h"
+#include "elm327/OBDSerialCommBT.h"
 #include "elm327/ATCommands.h"
 #include "elm327/PidProcessor.h"
 
@@ -22,7 +23,12 @@ public:
      */
     GTTurboEcu(uint32_t baudRate, uint8_t rxPin, uint8_t txPin);
 
+    GTTurboEcu();
+
     ~GTTurboEcu();
+
+
+    void init(String deviceName);
 
     /**
      * Waits and Reads a request from OBD client software (example: torque)
@@ -58,6 +64,10 @@ public:
      */
     bool registerMode01Pid(uint32_t pidHexId);
 
+
+    bool registerMode03Response(String response);
+
+
     /**
      * Used to informe the OBD client that the PID,
      * it has requested is not supported
@@ -81,7 +91,7 @@ public:
 
 private:
 
-    OBDSerialComm *_connection;
+    OBDSerialCommBT *_connection;
 
     ATCommands *_atProcessor;
 

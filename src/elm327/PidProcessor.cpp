@@ -5,17 +5,34 @@
 
 #include "PidProcessor.h"
 
-PidProcessor::PidProcessor(OBDSerialComm *connection) {
+PidProcessor::PidProcessor(OBDSerialCommBT *connection) {
     _connection = connection;
     resetPidMode01Array();
+    dtcResponse = "";
 };
 
 bool PidProcessor::process(String command) {
     bool processed = false;
 
+    if (isMode03(command))
+    {
+        if (dtcResponse.length())
+        {
+            _connection->writeTo(dtcResponse.c_str());
+            _connection->writeEnd();
+            processed = true;
+            return processed;     
+        }
+        else 
+        {
+            DEBUG("DTC response is empty.");
+        } 
+    }
+    
     if (!isMode01(command))
         return false;
-
+    
+    command = command.substring(0,3); //remove any num_responses values. Multiple responses not supported.
     uint16_t hexCommand = strtoul(command.c_str(), NULL, HEX);
     uint8_t pid = getPidCodeOnly(hexCommand);
     if (isSupportedPidRequest(pid)) {
@@ -56,6 +73,29 @@ bool PidProcessor::isMode01(String command) {
 }
 
 /**
+ * adds a supported pid, so it can answer to pid support request, ex 0100, 0120, ...
+ */
+bool PidProcessor::registerMode03Response(String response) {
+    if (response.length() != 0) 
+    {
+        dtcResponse = response;
+        DEBUG("Registered DTC response: " + response);
+        return true;
+    }
+    else
+    {
+        DEBUG("Invalid DTC code response: " + response);
+        return false;
+    }
+}
+
+bool PidProcessor::isMode03(String command) {
+    return command.startsWith("03") ? true : false;
+}
+
+
+
+/**
  *  return true if:
  *  - 1000
  *  - 1020
@@ -86,10 +126,11 @@ uint8_t PidProcessor::getPidIntervalIndex(uint8_t pidcode) {
  * returns only the pid ex 0C
  */
 uint8_t PidProcessor::getPidCodeOnly(uint16_t hexCommand) {
+
     if (hexCommand >= 0x0100) {
         hexCommand -= 0x100;
     }
-    return hexCommand;
+    return (uint8_t) hexCommand; // return only the lower 8 bits (trim off num_messages or other extra bytes if present)
 }
 
 void PidProcessor::setPidBit(uint8_t pid) {

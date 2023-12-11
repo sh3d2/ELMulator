@@ -1,17 +1,26 @@
 #include "GTTurboEcu.h"
 
 
-GTTurboEcu::GTTurboEcu(uint32_t baudRate, uint8_t rxPin, uint8_t txPin) {
-    _connection = new OBDSerialComm(baudRate, rxPin, txPin);
+// GTTurboEcu::GTTurboEcu(uint32_t baudRate, uint8_t rxPin, uint8_t txPin) {
+//     _connection = new OBDSerialComm(baudRate, rxPin, txPin);
+//     _atProcessor = new ATCommands(_connection);
+//     _pidProcessor = new PidProcessor(_connection);
+//     _lastCommand = "";
+// }
+
+GTTurboEcu::GTTurboEcu() {
+    _connection = new OBDSerialCommBT();
     _atProcessor = new ATCommands(_connection);
     _pidProcessor = new PidProcessor(_connection);
-
     _lastCommand = "";
 }
 
 GTTurboEcu::~GTTurboEcu() {
 }
 
+void GTTurboEcu::init(String deviceName) {
+    _connection->init(deviceName);
+}
 
 String GTTurboEcu::readPidRequest() {
     String rxData;
@@ -28,9 +37,12 @@ String GTTurboEcu::readPidRequest() {
 
 
 bool GTTurboEcu::registerMode01Pid(uint32_t pid) {
-    _pidProcessor->registerMode01Pid(pid);
+    return _pidProcessor->registerMode01Pid(pid);
 }
 
+bool GTTurboEcu::registerMode03Response(String response) {
+    return _pidProcessor->registerMode03Response(response);
+}
 
 void GTTurboEcu::writePidNotSupported() {
     _connection->writeEndNoData();
