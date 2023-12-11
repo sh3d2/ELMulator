@@ -1,7 +1,7 @@
 #include "ATCommands.h"
 
 
-ATCommands::ATCommands(OBDSerialComm *connection) {
+ATCommands::ATCommands(OBDSerialCommBT *connection) {
     this->connection = connection;
 }
 

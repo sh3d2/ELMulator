@@ -40,6 +40,10 @@ bool GTTurboEcu::registerMode01Pid(uint32_t pid) {
     return _pidProcessor->registerMode01Pid(pid);
 }
 
+bool GTTurboEcu::registerMode01MILResponse(String response) {
+    return _pidProcessor->registerMode01MILResponse(response);
+}
+
 bool GTTurboEcu::registerMode03Response(String response) {
     return _pidProcessor->registerMode03Response(response);
 }

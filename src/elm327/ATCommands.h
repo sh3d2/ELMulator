@@ -3,12 +3,12 @@
 
 
 #include <Arduino.h>
-#include "OBDSerialComm.h"
+#include "OBDSerialCommBT.h"
 
 class ATCommands {
 
 public:
-    ATCommands(OBDSerialComm *connection);
+    ATCommands(OBDSerialCommBT *connection);
 
     ~ATCommands();
 
@@ -17,7 +17,7 @@ public:
 private:
 
     // Variables
-    OBDSerialComm *connection;
+    OBDSerialCommBT *connection;
 
     void ATD();
 

@@ -64,7 +64,8 @@ public:
      */
     bool registerMode01Pid(uint32_t pidHexId);
 
-
+    bool registerMode01MILResponse(String response);
+    
     bool registerMode03Response(String response);
 
 

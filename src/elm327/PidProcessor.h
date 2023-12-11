@@ -21,6 +21,8 @@ public:
 
     bool registerMode01Pid(uint32_t pid);
 
+    bool registerMode01MILResponse(String response);
+
     bool registerMode03Response(String response);
 
     void writePidResponse(String requestPid, uint8_t numberOfBytes, uint32_t value);
@@ -33,11 +35,14 @@ private:
 
     String dtcResponse;
 
+    String milResponse;
+
     bool isSupportedPidRequest(uint8_t pid);
 
     uint32_t getSupportedPids(uint8_t pidcode);
 
     bool isMode01(String command);
+    bool isMode01MIL(String command);
     bool isMode03(String command);
 
     uint8_t getPidIntervalId(uint8_t pidcode);
