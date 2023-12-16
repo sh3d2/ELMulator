@@ -1,15 +1,15 @@
 #include "GTTurboEcu.h"
 
 
-// GTTurboEcu::GTTurboEcu(uint32_t baudRate, uint8_t rxPin, uint8_t txPin) {
-//     _connection = new OBDSerialComm(baudRate, rxPin, txPin);
-//     _atProcessor = new ATCommands(_connection);
-//     _pidProcessor = new PidProcessor(_connection);
-//     _lastCommand = "";
-// }
+GTTurboEcu::GTTurboEcu(uint32_t baudRate, uint8_t rxPin, uint8_t txPin) {
+    _connection = new OBDSerialComm(baudRate, rxPin, txPin);
+    _atProcessor = new ATCommands(_connection);
+    _pidProcessor = new PidProcessor(_connection);
+    _lastCommand = "";
+}
 
 GTTurboEcu::GTTurboEcu() {
-    _connection = new OBDSerialCommBT();
+    _connection = new OBDSerialComm();
     _atProcessor = new ATCommands(_connection);
     _pidProcessor = new PidProcessor(_connection);
     _lastCommand = "";

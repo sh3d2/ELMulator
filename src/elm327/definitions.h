@@ -7,7 +7,6 @@
 
 #include <stdint.h>
 
-
 extern HardwareSerial Serial;
 
 

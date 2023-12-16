@@ -5,7 +5,7 @@
 
 #include "PidProcessor.h"
 
-PidProcessor::PidProcessor(OBDSerialCommBT *connection) {
+PidProcessor::PidProcessor(OBDSerialComm *connection) {
     _connection = connection;
     resetPidMode01Array();
     dtcResponse = "";

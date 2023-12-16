@@ -1,18 +1,22 @@
 #include "OBDSerialComm.h"
 
 
-OBDSerialComm::OBDSerialComm(uint32_t baudRate, uint8_t rxPin, uint8_t txPin) {
-    setBaudRate(baudRate);
-    serial = new SoftwareSerial(rxPin, txPin);
-    serial->begin(getBaudRate());
-    serial->setTimeout(SERIAL_READ_TIMEOUT);
-    setToDefaults();
+OBDSerialComm::OBDSerialComm() {
+    
 }
 
 OBDSerialComm::~OBDSerialComm() {
     operator delete(serial);
 }
 
+void OBDSerialComm::init(String deviceName) {
+    Serial.println("Starting BT . . .");
+    serial = new BluetoothSerial();
+    //delay(2000);
+    serial->begin(deviceName, false);
+    setToDefaults();
+
+}
 
 void OBDSerialComm::writeEnd() {
 
@@ -30,7 +34,7 @@ void OBDSerialComm::writeEnd() {
 
     // 3 - Write prompt
     //    writeTo(0x3E);
-    writeTo('>');
+    writeTo(">");
 
     serial->flush();
 };
@@ -66,12 +70,12 @@ void OBDSerialComm::setToDefaults() {
 }
 
 void OBDSerialComm::writeTo(char const *response) {
-    serial->write(response);
+    serial->print(response);
 }
 
 
 void OBDSerialComm::writeTo(uint8_t cChar) {
-    serial->write(cChar);
+    serial->print(cChar);
 }
 
 void OBDSerialComm::writeEndPidTo(char const *response) {
@@ -100,11 +104,11 @@ void OBDSerialComm::setBaudRate(uint32_t rate) {
 }
 
 long OBDSerialComm::getBaudRate() {
-    return boudRate;
+    return this->boudRate;
 }
 
 bool OBDSerialComm::isEchoEnable() {
-    return echoEnable;
+    return this->echoEnable;
 }
 
 void OBDSerialComm::setEcho(bool echo) {

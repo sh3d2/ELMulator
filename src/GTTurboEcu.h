@@ -2,9 +2,7 @@
 #define GTTURBOECU_GTTurboEcu_h
 
 #include <Arduino.h>
-
 #include "elm327/OBDSerialComm.h"
-#include "elm327/OBDSerialCommBT.h"
 #include "elm327/ATCommands.h"
 #include "elm327/PidProcessor.h"
 
@@ -92,7 +90,7 @@ public:
 
 private:
 
-    OBDSerialCommBT *_connection;
+    OBDSerialComm *_connection;
 
     ATCommands *_atProcessor;
 

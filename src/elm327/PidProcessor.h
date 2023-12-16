@@ -8,14 +8,14 @@
 #include <Arduino.h>
 #include <WString.h>
 #include <Print.h>
-#include "definitions.h"
-#include "OBDSerialCommBT.h"
+// #include "definitions.h"
+#include "elm327/OBDSerialComm.h"
 
 class PidProcessor {
 
 public:
 
-    PidProcessor(OBDSerialCommBT *connection);
+    PidProcessor(OBDSerialComm *connection);
 
     bool process(String string);
 
@@ -29,7 +29,7 @@ public:
 
 private:
 
-    OBDSerialCommBT *_connection;
+    OBDSerialComm *_connection;
     
     uint32_t pidMode01Supported[N_MODE01_INTERVALS];
 

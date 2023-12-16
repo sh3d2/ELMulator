@@ -2,11 +2,17 @@
 #define GTTURBOECU_OBDSerialComm_h
 
 #include <Arduino.h>
-#include <SoftwareSerial.h>
 #include "definitions.h"
 
+#define BLUETOOTH 1
+#ifndef BLUETOOTH
+    #include <SoftwareSerial.h>
+#else
+    #include <BluetoothSerial.h>
+#endif
 
-class OBDSerialComm {
+
+class OBDSerialComm {         
 public:
     // ODB parameters
     enum STATUS {
@@ -15,8 +21,12 @@ public:
 
     OBDSerialComm(uint32_t baudRate, uint8_t rxPin, uint8_t txPin);
 
+    OBDSerialComm();
+
     ~OBDSerialComm();
 
+    void init(String deviceName);
+    
     void writeEndOK();
 
     void writeEndERROR();
@@ -61,12 +71,7 @@ public:
 
 private:
 
-    // Serial parameters
-    SoftwareSerial *serial; // lib to communicate with bluetooth
-    uint32_t boudRate; // Serial Boud Rate
-
-
-
+    uint32_t boudRate; // Serial Baud Rate
     STATUS status; // Operation status
     bool echoEnable; // echoEnable command after received
     bool lineFeedEnable;
@@ -79,6 +84,12 @@ private:
     long getBaudRate();
 
     void addSpacesToResponse(const char *response, char string[]);
+#ifndef BLUETOOTH
+    SoftwareSerial *serial; // lib to communicate with bluetooth
+#else
+    BluetoothSerial *serial;
+#endif
+
 };
 
 
