@@ -1,28 +1,28 @@
-#include "GTTurboEcu.h"
+#include "ELMulator.h"
 
 
-GTTurboEcu::GTTurboEcu(uint32_t baudRate, uint8_t rxPin, uint8_t txPin) {
+ELMulator::ELMulator(uint32_t baudRate, uint8_t rxPin, uint8_t txPin) {
     _connection = new OBDSerialComm(baudRate, rxPin, txPin);
     _atProcessor = new ATCommands(_connection);
     _pidProcessor = new PidProcessor(_connection);
     _lastCommand = "";
 }
 
-GTTurboEcu::GTTurboEcu() {
+ELMulator::ELMulator() {
     _connection = new OBDSerialComm();
     _atProcessor = new ATCommands(_connection);
     _pidProcessor = new PidProcessor(_connection);
     _lastCommand = "";
 }
 
-GTTurboEcu::~GTTurboEcu() {
+ELMulator::~ELMulator() {
 }
 
-void GTTurboEcu::init(String deviceName) {
+void ELMulator::init(String deviceName) {
     _connection->init(deviceName);
 }
 
-String GTTurboEcu::readPidRequest() {
+String ELMulator::readPidRequest() {
     String rxData;
     do {
         rxData = _connection->readData();
@@ -36,28 +36,28 @@ String GTTurboEcu::readPidRequest() {
 
 
 
-bool GTTurboEcu::registerMode01Pid(uint32_t pid) {
+bool ELMulator::registerMode01Pid(uint32_t pid) {
     return _pidProcessor->registerMode01Pid(pid);
 }
 
-bool GTTurboEcu::registerMode01MILResponse(String response) {
+bool ELMulator::registerMode01MILResponse(String response) {
     return _pidProcessor->registerMode01MILResponse(response);
 }
 
-bool GTTurboEcu::registerMode03Response(String response) {
+bool ELMulator::registerMode03Response(String response) {
     return _pidProcessor->registerMode03Response(response);
 }
 
-void GTTurboEcu::writePidNotSupported() {
+void ELMulator::writePidNotSupported() {
     _connection->writeEndNoData();
 }
 
 
-void GTTurboEcu::writePidResponse(String requestPid, uint8_t numberOfBytes, uint32_t value) {
+void ELMulator::writePidResponse(String requestPid, uint8_t numberOfBytes, uint32_t value) {
     _pidProcessor->writePidResponse(requestPid, numberOfBytes, value);
 }
 
-bool GTTurboEcu::processResponse(String command) {
+bool ELMulator::processResponse(String command) {
 
     //TODO: check for no 0X0D char in command, return ? and >
     //TODO: receive only <cr>, repeat last command
@@ -97,13 +97,13 @@ bool GTTurboEcu::processResponse(String command) {
 }
 
 
-bool GTTurboEcu::isValidHex(const char *pid) {
+bool ELMulator::isValidHex(const char *pid) {
     return (pid[strspn(pid, "0123456789abcdefABCDEF")] == 0);
 }
 
 
 /*
-int GTTurboEcu::freeRam() {
+int ELMulator::freeRam() {
     extern int __heap_start, *__brkval;
     int v;
     return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);

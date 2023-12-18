@@ -2,14 +2,14 @@
 // Created by dragon on 12-05-2016.
 //
 
-#ifndef GTTURBOECU_PIDPROCESSOR_H
-#define GTTURBOECU_PIDPROCESSOR_H
+#ifndef ELMulator_PIDPROCESSOR_H
+#define ELMulator_PIDPROCESSOR_H
 
 #include <Arduino.h>
 #include <WString.h>
 #include <Print.h>
 // #include "definitions.h"
-#include "elm327/OBDSerialComm.h"
+#include "OBDSerialComm.h"
 
 class PidProcessor {
 
@@ -64,4 +64,4 @@ private:
 };
 
 
-#endif //GTTURBOECU_PIDPROCESSOR_H
+#endif //ELMulator_PIDPROCESSOR_H

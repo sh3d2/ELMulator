@@ -1,9 +1,9 @@
-#ifndef GTTURBOECU_ATCommands_h
-#define GTTURBOECU_ATCommands_h
+#ifndef ELMulator_ATCommands_h
+#define ELMulator_ATCommands_h
 
 
 #include <Arduino.h>
-#include "elm327/OBDSerialComm.h"
+#include "OBDSerialComm.h"
 
 class ATCommands {
 

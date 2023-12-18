@@ -2,7 +2,6 @@
 // Created by dragon on 12-05-2016.
 //
 
-
 #include "PidProcessor.h"
 
 PidProcessor::PidProcessor(OBDSerialComm *connection) {

@@ -1,9 +1,9 @@
-#include "ELMulator.h"
+#include "ELMulator_App.h"
 
 String deviceName = "ELMULATOR";
 bool isCycleUp = true;
 uint32_t cycle = 0;
-GTTurboEcu gtTurboEcu;
+ELMulator ELMulator;
 
 
 void setup() 
@@ -14,7 +14,7 @@ void setup()
  
 void loop() 
 {
-    String pidRequest = gtTurboEcu.readPidRequest();
+    String pidRequest = ELMulator.readPidRequest();
     processRequest(pidRequest);
 } 
 
@@ -27,19 +27,19 @@ void setupSerial()
 
 void setupELMSim() 
 {
-    gtTurboEcu.init(deviceName);
-    gtTurboEcu.registerMode01Pid(0x05);
-    gtTurboEcu.registerMode01Pid(0x0B);
-    gtTurboEcu.registerMode01Pid(0x0C);
-    gtTurboEcu.registerMode01Pid(0x0D);
-    gtTurboEcu.registerMode01Pid(0x33);
-    gtTurboEcu.registerMode01Pid(0x46);
-    gtTurboEcu.registerMode01Pid(0x5C);
-    gtTurboEcu.registerMode01Pid(0x70);
-    gtTurboEcu.registerMode01Pid(0xA6);
+    ELMulator.init(deviceName);
+    ELMulator.registerMode01Pid(0x05);
+    ELMulator.registerMode01Pid(0x0B);
+    ELMulator.registerMode01Pid(0x0C);
+    ELMulator.registerMode01Pid(0x0D);
+    ELMulator.registerMode01Pid(0x33);
+    ELMulator.registerMode01Pid(0x46);
+    ELMulator.registerMode01Pid(0x5C);
+    ELMulator.registerMode01Pid(0x70);
+    ELMulator.registerMode01Pid(0xA6);
     
-    gtTurboEcu.registerMode01MILResponse("4101830000");
-    gtTurboEcu.registerMode03Response("43010341\r\n43010123\r\n43010420");
+    ELMulator.registerMode01MILResponse("4101830000");
+    ELMulator.registerMode03Response("43010341\r\n43010123\r\n43010420");
 }
 
 uint32_t FakeSensorValueProvider() {
@@ -84,7 +84,7 @@ void processRequest(String pidRequest)
          * numberOfBytes - the number of bytes this PID value has, see OBDII PID specifications
          * sensorValue - the value of the sensor
          */
-        gtTurboEcu.writePidResponse(pidRequest, numberOfBytes, sensorValue);
+        ELMulator.writePidResponse(pidRequest, numberOfBytes, sensorValue);
         return;
     }
 
@@ -92,7 +92,7 @@ void processRequest(String pidRequest)
      * 010B intake manifold abs pressure
      */
     if (pidRequest.equalsIgnoreCase("010B")) {
-        gtTurboEcu.writePidResponse(pidRequest, 1, FakeSensorValueProvider());
+        ELMulator.writePidResponse(pidRequest, 1, FakeSensorValueProvider());
         return;
     }
 
@@ -103,7 +103,7 @@ void processRequest(String pidRequest)
         uint16_t rpmValue = FakeSensorValueProvider() * 100;
 
         // Note: this time the PID value has two bytes
-        gtTurboEcu.writePidResponse(pidRequest, 2, rpmValue);
+        ELMulator.writePidResponse(pidRequest, 2, rpmValue);
         return;
     }
 
@@ -111,7 +111,7 @@ void processRequest(String pidRequest)
      * 0D Vehicle speed
      */
     if (pidRequest.equalsIgnoreCase("010D")) {
-        gtTurboEcu.writePidResponse(pidRequest, 1, FakeSensorValueProvider());
+        ELMulator.writePidResponse(pidRequest, 1, FakeSensorValueProvider());
         return;
     }
 
@@ -119,7 +119,7 @@ void processRequest(String pidRequest)
      * 33 Absolute Barometric Pressure
      */
     if (pidRequest.equalsIgnoreCase("0133")) {
-        gtTurboEcu.writePidResponse(pidRequest, 1, FakeSensorValueProvider());
+        ELMulator.writePidResponse(pidRequest, 1, FakeSensorValueProvider());
         return;
     }
 
@@ -127,7 +127,7 @@ void processRequest(String pidRequest)
      * 0146 Ambient air temperature
      */
     if (pidRequest.equalsIgnoreCase("0146")) {
-        gtTurboEcu.writePidResponse(pidRequest, 1, FakeSensorValueProvider());
+        ELMulator.writePidResponse(pidRequest, 1, FakeSensorValueProvider());
         return;
     }
 
@@ -135,7 +135,7 @@ void processRequest(String pidRequest)
      * 015C Engine oil temperature
      */
     if (pidRequest.equalsIgnoreCase("015C")) {
-        gtTurboEcu.writePidResponse(pidRequest, 1, FakeSensorValueProvider());
+        ELMulator.writePidResponse(pidRequest, 1, FakeSensorValueProvider());
         return;
     }
 
@@ -143,7 +143,7 @@ void processRequest(String pidRequest)
      * 0170 VIN
      */
     else if (pidRequest.equalsIgnoreCase("0170")) {
-        gtTurboEcu.writePidResponse(pidRequest, 9, FakeSensorValueProvider());
+        ELMulator.writePidResponse(pidRequest, 9, FakeSensorValueProvider());
         return;
     }
 
@@ -151,7 +151,7 @@ void processRequest(String pidRequest)
      * 01A6 Odometer
      */
     else if (pidRequest.equalsIgnoreCase("01A6")) {
-        gtTurboEcu.writePidResponse(pidRequest, 4, 1234567);
+        ELMulator.writePidResponse(pidRequest, 4, 1234567);
         return;
     }
 
@@ -159,6 +159,6 @@ void processRequest(String pidRequest)
     /**
      * If pid not implemented, report it as not implemented
      */
-    gtTurboEcu.writePidNotSupported();
+    ELMulator.writePidNotSupported();
 
 }

@@ -1,17 +1,17 @@
-#ifndef GTTURBOECU_GTTurboEcu_h
-#define GTTURBOECU_GTTurboEcu_h
+#ifndef ELMulator_ELMulator_h
+#define ELMulator_ELMulator_h
 
 #include <Arduino.h>
-#include "elm327/OBDSerialComm.h"
-#include "elm327/ATCommands.h"
-#include "elm327/PidProcessor.h"
+#include "OBDSerialComm.h"
+#include "ATCommands.h"
+#include "PidProcessor.h"
 
-class GTTurboEcu {
+class ELMulator {
 
 public:
 
     /**
-     * When creating a new instance of GTTurboEcu,
+     * When creating a new instance of ELMulator,
      * it needs to set the Bluetooth serial parameter's
      *
      * @param baudRate - rate for bluetooth serial port (normally 9600)
@@ -19,11 +19,11 @@ public:
      * @param txPin - the Arduino TX pin for the Bluetooth module (serial port)
      * @return
      */
-    GTTurboEcu(uint32_t baudRate, uint8_t rxPin, uint8_t txPin);
+    ELMulator(uint32_t baudRate, uint8_t rxPin, uint8_t txPin);
 
-    GTTurboEcu();
+    ELMulator();
 
-    ~GTTurboEcu();
+    ~ELMulator();
 
 
     void init(String deviceName);
@@ -36,7 +36,7 @@ public:
      *
      * Any other request will be automaticly handle or it will be rejected.
      *
-     * GTTurboEcu lib will automaticly handle:
+     * ELMulator lib will automaticly handle:
      * - any AT command
      * - PID's support request like 0100, 0120, 0140, 0160, ...
      *
@@ -46,7 +46,7 @@ public:
 
     /**
      * Registry the PID's (sensors) your arduino will support.
-     * Currently GTTurboEcu lib only supports MODE 01 PID's
+     * Currently ELMulator lib only supports MODE 01 PID's
      *
      * In OBDII MODE 01 PID's, are request
      * to Show current data for a given sensor identified by a PID

@@ -1,6 +1,6 @@
 #pragma once
 #include <Arduino.h>
-#include <GTTurboEcu.h>
+#include <ELMulator.h>
 
 void setupSerial();
 void setupELMSim();

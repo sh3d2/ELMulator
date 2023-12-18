@@ -1,5 +1,5 @@
-#ifndef GTTURBOECU_OBDSerialComm_h
-#define GTTURBOECU_OBDSerialComm_h
+#ifndef ELMulator_OBDSerialComm_h
+#define ELMulator_OBDSerialComm_h
 
 #include <Arduino.h>
 #include "definitions.h"

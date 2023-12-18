@@ -2,8 +2,8 @@
 // Created by dragon on 12-05-2016.
 //
 
-#ifndef GTTURBOECU_DEFINITIONS_H
-#define GTTURBOECU_DEFINITIONS_H
+#ifndef ELMulator_DEFINITIONS_H
+#define ELMulator_DEFINITIONS_H
 
 #include <stdint.h>
 
@@ -22,7 +22,7 @@ extern HardwareSerial Serial;
 
 
 // Device ID
-#define ID  "ELM327 - GTTurboECU V0.0.1"
+#define ID  "ELM327 - ELMulator V0.0.1"
 #define DESC  "GTTurbo OBD2 Arduino libs, based on ELM"
 #define PROTOCOL "6" // canbus 500k 11 bit protocol id for elm.
 
@@ -38,4 +38,4 @@ const uint8_t PID_INTERVAL_OFFSET = 0x20;
 
 
 
-#endif //GTTURBOECU_DEFINITIONS_H
+#endif //ELMulator_DEFINITIONS_H
