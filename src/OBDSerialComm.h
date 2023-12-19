@@ -2,7 +2,6 @@
 #define ELMulator_OBDSerialComm_h
 
 #include <Arduino.h>
-#include "definitions.h"
 
 #define BLUETOOTH 1
 #ifndef BLUETOOTH
@@ -71,7 +70,7 @@ public:
 
 private:
 
-    uint32_t boudRate; // Serial Baud Rate
+    uint32_t baudRate; // Serial Baud Rate
     STATUS status; // Operation status
     bool echoEnable; // echoEnable command after received
     bool lineFeedEnable;

@@ -8,8 +8,9 @@
 #include <Arduino.h>
 #include <WString.h>
 #include <Print.h>
-// #include "definitions.h"
 #include "OBDSerialComm.h"
+#include "definitions.h"
+
 
 class PidProcessor {
 
@@ -26,6 +27,8 @@ public:
     bool registerMode03Response(String response);
 
     void writePidResponse(String requestPid, uint8_t numberOfBytes, uint32_t value);
+
+    uint8_t getPidCodeOnly(uint16_t hexCommand);
 
 private:
 
@@ -59,7 +62,6 @@ private:
 
     void resetPidMode01Array();
 
-    uint8_t getPidCodeOnly(uint16_t hexCommand);
 
 };
 

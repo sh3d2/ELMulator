@@ -1,4 +1,5 @@
 #include "OBDSerialComm.h"
+#include "definitions.h"
 
 
 OBDSerialComm::OBDSerialComm() {
@@ -100,11 +101,11 @@ String OBDSerialComm::readData() {
 }
 
 void OBDSerialComm::setBaudRate(uint32_t rate) {
-    this->boudRate = rate;
+    this->baudRate = rate;
 }
 
 long OBDSerialComm::getBaudRate() {
-    return this->boudRate;
+    return this->baudRate;
 }
 
 bool OBDSerialComm::isEchoEnable() {

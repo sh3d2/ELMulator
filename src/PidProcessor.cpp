@@ -1,7 +1,3 @@
-//
-// Created by dragon on 12-05-2016.
-//
-
 #include "PidProcessor.h"
 
 PidProcessor::PidProcessor(OBDSerialComm *connection) {
@@ -203,7 +199,7 @@ uint32_t PidProcessor:: getSupportedPids(uint8_t pid) {
 
 void PidProcessor::getFormattedResponse(char *response, uint8_t totalNumberOfChars, String pid, uint32_t value) {
     uint8_t nValueChars = totalNumberOfChars - PID_N_BYTES * N_CHARS_IN_BYTE;
-    char cValue[3];
+    char cValue[3] = {0};
     itoa(nValueChars, cValue, DEC);
     String mask = "%s%0";
     mask.concat(cValue);

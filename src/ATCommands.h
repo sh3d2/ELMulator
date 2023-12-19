@@ -4,6 +4,7 @@
 
 #include <Arduino.h>
 #include "OBDSerialComm.h"
+#include "definitions.h"
 
 class ATCommands {
 

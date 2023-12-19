@@ -5,6 +5,7 @@
 #include "OBDSerialComm.h"
 #include "ATCommands.h"
 #include "PidProcessor.h"
+#include "definitions.h"
 
 class ELMulator {
 
@@ -66,6 +67,7 @@ public:
     
     bool registerMode03Response(String response);
 
+    uint8_t getPidCodeOnly(uint16_t hexCommand);
 
     /**
      * Used to informe the OBD client that the PID,
@@ -98,7 +100,7 @@ private:
 
     String _lastCommand;
 
-    bool processResponse(String command);
+    bool processRequest(String command);
 
     bool isValidHex(const char *pid);
 };
