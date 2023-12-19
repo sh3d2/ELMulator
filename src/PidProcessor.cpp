@@ -3,47 +3,14 @@
 PidProcessor::PidProcessor(OBDSerialComm *connection) {
     _connection = connection;
     resetPidMode01Array();
-    dtcResponse = "";
-    milResponse = "";
 };
 
 bool PidProcessor::process(String command) {
     bool processed = false;
-
-    if (isMode03(command))
-    {
-        if (dtcResponse.length())
-        {
-            _connection->writeTo(dtcResponse.c_str());
-            _connection->writeEnd();
-            processed = true;
-            return processed;     
-        }
-        else 
-        {
-            DEBUG("DTC response is empty.");
-            return processed;
-        } 
-    }
-    
-    if (isMode01MIL(command))
-    {if (milResponse.length())
-        {
-            _connection->writeTo(milResponse.c_str());
-            _connection->writeEnd();
-            processed = true;
-            return processed;     
-        }
-        else 
-        {
-            DEBUG("DTC response is empty.");
-            return processed;
-        } 
-
-    }
-
     if (!isMode01(command))
+    {
         return false;
+    }
     
     command = command.substring(0,3); //remove any num_responses values. Multiple responses not supported.
     uint16_t hexCommand = strtoul(command.c_str(), NULL, HEX);
@@ -84,48 +51,6 @@ bool PidProcessor::registerMode01Pid(uint32_t pid) {
 bool PidProcessor::isMode01(String command) {
     return command.startsWith("01") ? true : false;
 }
-
-bool PidProcessor::registerMode01MILResponse(String response)
-{  
-    if (response.length() != 0) 
-    {
-        milResponse = response;
-        DEBUG("Registered MIL check response: " + response);
-        return true;
-    }
-    else
-    {
-        DEBUG("Invalid MIL check response: " + response);
-        return false;
-    }
-}
-
-bool PidProcessor::isMode01MIL(String command) {
-    return command.startsWith("0101") ? true : false;
-}
-
-/**
- * adds a supported pid, so it can answer to pid support request, ex 0100, 0120, ...
- */
-bool PidProcessor::registerMode03Response(String response) {
-    if (response.length() != 0) 
-    {
-        dtcResponse = response;
-        DEBUG("Registered DTC response: " + response);
-        return true;
-    }
-    else
-    {
-        DEBUG("Invalid DTC code response: " + response);
-        return false;
-    }
-}
-
-bool PidProcessor::isMode03(String command) {
-    return command.startsWith("03") ? true : false;
-}
-
-
 
 /**
  *  return true if:

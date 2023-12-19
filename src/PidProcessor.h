@@ -35,19 +35,13 @@ private:
     OBDSerialComm *_connection;
     
     uint32_t pidMode01Supported[N_MODE01_INTERVALS];
-
-    String dtcResponse;
-
-    String milResponse;
-
+ 
     bool isSupportedPidRequest(uint8_t pid);
 
     uint32_t getSupportedPids(uint8_t pidcode);
 
     bool isMode01(String command);
-    bool isMode01MIL(String command);
-    bool isMode03(String command);
-
+  
     uint8_t getPidIntervalId(uint8_t pidcode);
 
     uint8_t getPidIntervalIndex(uint8_t pidcode);

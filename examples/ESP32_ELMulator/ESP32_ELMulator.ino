@@ -3,40 +3,41 @@
 String deviceName = "ELMULATOR";
 bool isCycleUp = true;
 uint32_t cycle = 0;
+
+String milResponse = "4101830000";                       // MIL response code indicating 3 current DTC
+String dtcResponse = "43010341\r\n43010123\r\n43010420"; // DTC response returning 3 DTC codes (multiline response)
+uint32_t odoResponse = 1234567;                          // Hardcode an odometer reading of 1234567
+
 ELMulator ELMulator;
 
-
-void setup() 
+void setup()
 {
     setupSerial();
     ELMulator.init(deviceName);
 
-    // Set up PIDs 0x00 to 0x65 
-    for (int i = 0; i < 102; i++)
+    // Set up PIDs 0x00 to 0x65
+    // Will be provided a response with mock data value if no special handling is performed.
+    // Requests for PID > 0x65 are not currently supported - will return "NO DATA"
+    for (int i = 0; i < 0x66; i++)
     {
         ELMulator.registerMode01Pid(i);
     }
-       
-    ELMulator.registerMode01MILResponse("4101830000");
-    ELMulator.registerMode03Response("43010341\r\n43010123\r\n43010420");
 }
- 
-void loop() 
+
+void loop()
 {
     String pidRequest = ELMulator.readPidRequest();
     handleRequest(pidRequest);
-} 
+}
 
-void setupSerial() 
-{// init serial communication, is only need if there's a need
+void setupSerial()
+{ // init serial communication, is only need if there's a need
     //  to read the debug info on serial port of the arduino
-    
-   
+
     Serial.begin(115200);
     Serial.setHwFlowCtrlMode(HW_FLOWCTRL_DISABLE);
     Serial.println("ELMulator starting up . . .");
 }
-
 
 /**
  * Fake some data
@@ -45,16 +46,22 @@ void setupSerial()
  * When 0xff is reached the cycle is reverted
  * and the counter will decrement by one until 0 is reached
  */
-uint32_t FakeSensorValueProvider() {
+uint32_t FakeSensorValueProvider()
+{
 
-    if(isCycleUp) {
+    if (isCycleUp)
+    {
         cycle++;
-        if(cycle == 0xff) {
+        if (cycle == 0xff)
+        {
             isCycleUp = false;
         }
-    } else {
+    }
+    else
+    {
         cycle--;
-        if (cycle == 0) {
+        if (cycle == 0)
+        {
             isCycleUp = true;
         }
     }
@@ -62,84 +69,108 @@ uint32_t FakeSensorValueProvider() {
     return cycle;
 }
 
+bool isMode01(String command) {
+    return command.startsWith("01") ? true : false;
+}
+
+bool isMode03(String command)
+{
+    return command.startsWith("03") ? true : false;
+}
+
+bool isMode01MIL(String command)
+{
+    return command.startsWith("0101") ? true : false;
+}
+
 void handleRequest(String pidRequest)
 {
-     /**
+    /**
      * After receiving a PID(sensor) request
-     * read the sensor value (in this case is a fake value)
-     *
-     * and send a response containing the sensor value
+     * read the sensor value and send a response.
+     * Response can come from a sensor or mock value.
      */
+
+    // Handle special case requests like MIL and DTC checks
+
+    if (isMode03(pidRequest)) // Mode 03 request == get current DTC codes
+    {
+        if (dtcResponse.length())
+        {
+            ELMulator.writeResponse(dtcResponse);
+            return;
+        }
+        else
+        {
+        }
+    }
+
+    else if (isMode01MIL(pidRequest)) // Mode 0100 MIL request gets number of current DTC codes
+    {
+        if (milResponse.length())
+        {
+            ELMulator.writeResponse(milResponse);
+            return;
+        }
+        else
+        {
+            DEBUG("MIL response is empty.");
+            return;
+        }
+    }
     
-    if (!strncmp(pidRequest.c_str(), "01", strlen("01")))        //Check for mode 01 request
+    else  if (isMode01(pidRequest)) // Check for mode 01 request 
     {
         if (pidRequest.length() > 4)
         {
-            pidRequest = pidRequest.substring(0, 4);            //remove num_responses value if present
-        } 
+            pidRequest = pidRequest.substring(0, 4); // remove num_responses value if present; lib only handles single responses
+        }
         uint16_t hexCommand = strtoul(pidRequest.c_str(), NULL, HEX);
         uint8_t pidCode = ELMulator.getPidCodeOnly(hexCommand);
-        
-        // char requestPID[3] = {0};
-        // sprintf(requestPID, &pidRequest[2]);
-        
-        
-        //uint8_t pidCode = pidRequest.substring(pidRequest.length() - 2, pidRequest.length()).toInt();
 
-        // uint8_t pidCode = (uint8_t)strtol(requestPID, NULL, DEC);
-        
-        // Handle any requests for which we have specific data, either from setup or via a sensor
-
-        /**
-         * 01A6 Odometer value provided in setup()
-         */
-        if (pidCode == ODOMETER) 
+        // Example response to PIC 0xA6 (Odometer) - return hardcoded mock value
+        if (pidCode == ODOMETER)
         {
-            ELMulator.writePidResponse(pidRequest, 4, 1234567);
+            ELMulator.writePidResponse(pidRequest, responseBytes[pidCode], odoResponse);
             return;
         }
 
-        else if (pidRequest.equalsIgnoreCase("0105")) 
-        { 
-            uint8_t numberOfBytes = 1;
+        //example processing for 0x05 (Engine Coolant Temp)
+        else if (pidCode == ENGINE_COOLANT_TEMP)
+        {
             uint32_t sensorValue = FakeSensorValueProvider();
 
             /**
              * Response parameters example:
              * pidRequest - we send the pid we received to identify it
-             * numberOfBytes - the number of bytes this PID value has, see OBDII PID specifications
-             * sensorValue - the value of the sensor
+             * numberOfBytes - the number of bytes this PID value has, using lookup table responseBytes
+             * sensorValue - the value of the sensor - mock value in this example
              */
-            ELMulator.writePidResponse(pidRequest, numberOfBytes, sensorValue);
+            ELMulator.writePidResponse(pidRequest, responseBytes[pidCode], sensorValue);
             return;
         }
-        else if (pidRequest.equalsIgnoreCase("010C")) 
+        
+        // Example doing some modification of mock sensor value 
+        else if (pidCode == ENGINE_RPM)
         {
             uint16_t rpmValue = FakeSensorValueProvider() * 100;
             ELMulator.writePidResponse(pidRequest, responseBytes[pidCode], rpmValue);
             return;
         }
-        /**
-         * 0170 VIN
-         */
-        else if (pidRequest.equalsIgnoreCase("0170")) {
-            ELMulator.writePidResponse(pidRequest, 9, FakeSensorValueProvider());
-            return;
-        }
 
+        // Respond to any other mode 01 request with a mock sensor value
         else
-        {   // Respondd to any other mode 01 request with a fake sensor value
-            
+        { 
             ELMulator.writePidResponse(pidRequest, responseBytes[pidCode], FakeSensorValueProvider());
             return;
         }
     }
-    else 
+    
+    else
     {
         /**
-         * If pid not implemented, report it as not implemented
+         * Not a mode 01 PID request. Report it as not supported (ie, "NO DATA");
          */
         ELMulator.writePidNotSupported();
     }
-
 }

@@ -70,6 +70,12 @@ void ELMulator::writePidResponse(String requestPid, uint8_t numberOfBytes, uint3
 }
 
 
+void ELMulator::writeResponse(String response)
+{
+    _connection->writeTo(response.c_str());
+    _connection->writeEnd();
+}
+
 bool ELMulator::processRequest(String command) {
 
     //TODO: check for no 0X0D char in command, return ? and >

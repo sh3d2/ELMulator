@@ -80,7 +80,7 @@ public:
     void writePidNotSupported();
 
     /**
-     * Responde to a given PID request from OBDII client (ex: torque)
+     * Respond to a given PID request from OBDII client (ex: torque)
      *
      * @param requestPid - the received pid
      * @param numberOfBytes - number of bytes this PID response VALUE is supposed to have
@@ -89,6 +89,11 @@ public:
      *                  with the appropriated number of HEX chars (numberOfChars)
      */
     void writePidResponse(String requestPid, uint8_t numberOfBytes, uint32_t value);
+
+    // Write the response back to the requestor without PID formatting, etc
+    // Just pass the response string on. Useful for testing with a specific response
+    // that has been pre-configured.
+    void writeResponse(String response);
 
 private:
 
