@@ -30,7 +30,10 @@ void loop()
 void setupSerial() 
 {// init serial communication, is only need if there's a need
     //  to read the debug info on serial port of the arduino
+    
+   
     Serial.begin(115200);
+    Serial.setHwFlowCtrlMode(HW_FLOWCTRL_DISABLE);
     Serial.println("ELMulator starting up . . .");
 }
 
@@ -70,12 +73,10 @@ void handleRequest(String pidRequest)
     
     if (!strncmp(pidRequest.c_str(), "01", strlen("01")))        //Check for mode 01 request
     {
-       Serial.print("pidRequest (1): "); Serial.println(pidRequest); 
         if (pidRequest.length() > 4)
         {
             pidRequest = pidRequest.substring(0, 4);            //remove num_responses value if present
         } 
-        Serial.print("pidRequest: "); Serial.println(pidRequest);
         uint16_t hexCommand = strtoul(pidRequest.c_str(), NULL, HEX);
         uint8_t pidCode = ELMulator.getPidCodeOnly(hexCommand);
         
