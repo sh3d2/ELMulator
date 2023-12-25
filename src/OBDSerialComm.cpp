@@ -22,19 +22,14 @@ void OBDSerialComm::init(String deviceName) {
 void OBDSerialComm::writeEnd() {
 
     // 1 - write carriage return
-    //    writeTo(0x0D);
-    writeTo("\n");
-    //    writeTo(13);
-
+    writeTo("\r");
 
     // 2- (optional ) write linefeed
     if (lineFeedEnable) {
-        writeTo("\r");
-        // writeTo(10);
+        writeTo("\n");
     }
 
     // 3 - Write prompt
-    //    writeTo(0x3E);
     writeTo(">");
 
     serial->flush();
