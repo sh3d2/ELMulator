@@ -1,13 +1,17 @@
 #include "ESP32_Simple_ELMulator.h"
 
-String deviceName = "ELMULATOR";
+/**
+ * This example demonstrates a very simple implementation of ELMulator.
+ * It handles all AT Commands, SUPPORTED_PIDS queries, etc. and rejectss unsupported requests.
+ * All Mode 01 PID requests are provided a response of the correct data size with mock data values.
+ * Typical use case is for testing custom applications to work with ELM327 devices. 
+ */
+
+const String deviceName = "ELMULATOR"; // Bluetooth device name to use (no pin)
 ELMulator ELMulator;
 
 void setup()
 {
-    // Simplest implementation of ELMulator.
-    // Supports all Mode 01 PIDs and responds with mock data values
-    // Typical use case is for testing applications to work with ELM327 devices
     Serial.begin(115200);
     Serial.println("Starting ELMulator...");
     ELMulator.init(deviceName, true); // Initialize with support for all PIDs 0x00 to 0x65, providing mock data

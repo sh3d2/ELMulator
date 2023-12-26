@@ -1,22 +1,21 @@
 #ifndef ELMulator_ATCommands_h
 #define ELMulator_ATCommands_h
 
-
 #include <Arduino.h>
 #include "OBDSerialComm.h"
 #include "definitions.h"
 
-class ATCommands {
+class ATCommands
+{
 
 public:
     ATCommands(OBDSerialComm *connection);
 
     ~ATCommands();
 
-    bool process(const String& string);
+    bool process(const String &string);
 
 private:
-
     // Variables
     OBDSerialComm *connection;
 
@@ -26,19 +25,19 @@ private:
 
     void ATI();
 
-    void ATEx(String& x);
+    void ATEx(String &x);
 
-    void ATMx(String& x);
+    void ATMx(String &x);
 
-    void ATLx(String& x);
+    void ATLx(String &x);
 
-    void ATSx(String& x);
+    void ATSx(String &x);
 
-    void ATHx(String& x);
+    void ATHx(String &x);
 
-    void ATSPx(String& x);
+    void ATSPx(String &x);
 
-    void ATATx(String& cmd);
+    void ATATx(String &cmd);
 
     void ATPC();
 
@@ -46,11 +45,9 @@ private:
 
     void ATDESC();
 
-    void processCommand(const String& command);
+    void processCommand(const String &command);
 
-    bool isATCommand(const String& command);
-
+    bool isATCommand(const String &command);
 };
 
 #endif
-

@@ -1,21 +1,22 @@
 #include "ESP32_Custom_ELMulator.h"
 
-String deviceName = "ELMULATOR";
+const String deviceName = "ELMULATOR"; // Bluetooth device name to use (no pin)
 
 // Set up hardcoded responses to non-standard PID requests for MIL, DTC, ODO data
-String milResponse = "4101830000";                       // MIL response code indicating 3 current DTC
-String dtcResponse = "43010341\r\n43010123\r\n43010420"; // DTC response returning 3 DTC codes (multiline response)
-uint32_t odoResponse = 1234567;                          // Hardcode an odometer reading of 1234567
+const String milResponse = "4101830000";                       // MIL response code indicating 3 current DTC
+const String dtcResponse = "43010341\r\n43010123\r\n43010420"; // DTC response returning 3 DTC codes (multiline response)
+const uint32_t odoResponse = 1234567;                          // Hardcode an odometer reading of 1234567
 
 ELMulator ELMulator;
+
 void setup()
 {
     Serial.begin(115200);
     Serial.println("Starting ELMulator...");
-    ELMulator.init(deviceName);
+    ELMulator.init(deviceName); 
 
     // Register the specific PIDs we are going to handle.
-    // ELMulator will respond to supported PID request ("0101") with the appropriate value
+    // ELMulator will respond to SUPPORTED_PIDS request ("0101") with the appropriate value
     // indicating which PIDs it can respond to.
     ELMulator.registerMode01Pid(ODOMETER);
     ELMulator.registerMode01Pid(ENGINE_COOLANT_TEMP);
@@ -30,23 +31,25 @@ void setup()
 
 void loop()
 {
-    // Waits for a new request from an ELM client and does some pre-processing to validate PID support and correct request formatting.
-    // Non-PID requests like AT commands etc will be handled by ELMulator automatically.
-    // PID requests will be verified as supported (registered) and unsupported PIDs responded to with NO DATA response.
+    /**
+     * Waits for a new request from an ELM client and does some pre-processing to validate the PID and request.
+     * Non-PID requests like AT commands and SUPPORTED_PIDS queries will be handled by ELMulator automatically.
+     * PID requests will be verified as supported (registered); unsupported PIDs responded to with NO DATA response.
+     * Returns true if the request is for one of the PIDS we have registered above so we can respond to it.
+     */
     if (ELMulator.readELMRequest())
     {
         handlePIDRequest(ELMulator.elmRequest);
     }
 }
 
+/**
+ * After receiving a supported PID(sensor) request, we prepare the response here.
+ * Response can come from a hardcoded value, a real hardware sensor, or a mock value.
+ * Default response is a mock value if no other handling is provided.
+ */
 void handlePIDRequest(const String &request)
 {
-    /**
-     * After receiving a supported PID(sensor) request, we prepare the response here.
-     * Response can come from a hardcoded value, a real hardware sensor, or a mock value.
-     * Default response is a mock value if no other handling is provided
-     */
-
     // Handle special case requests like MIL and DTC checks
     if (ELMulator.isMode03(request)) // Mode 03 request == Returns (hardcoded) list current DTC codes
     {
@@ -59,11 +62,11 @@ void handlePIDRequest(const String &request)
         {
             DEBUG("DTC response is empty.");
             ELMulator.writePidNotSupported();
-            return; // TODO: Send error ? response
+            return;
         }
     }
 
-    else if (ELMulator.isMode01MIL(request)) // Mode 0100 MIL request == Returns (hardcoded) number of current DTC codes
+    else if (ELMulator.isMode01MIL(request)) // Mode 0101 MIL request == Returns (hardcoded) number of current DTC codes
     {
         if (milResponse.length())
         {
@@ -105,14 +108,14 @@ void handlePIDRequest(const String &request)
             return;
         }
 
-        // Example response to PID 0xA6 (Odometer) - returns our hardcoded odometer response string
+        // Example response for PID 0xA6 (Odometer) - returns our hardcoded odometer response string
         else if (pidCode == ODOMETER)
         {
             ELMulator.writePidResponse(request, responseBytes[pidCode], odoResponse);
             return;
         }
 
-        // // Example response to PID 0xOD (Vehicle speed) - returns a value from external GPS
+        // // Example response for PID 0xOD (Vehicle speed) - returns a value from external GPS
         // else if (pidCode == VEHICLE_SPEED)
         // {
         //     uint32_t gpsSpeed = myGPS.speed();
@@ -120,7 +123,7 @@ void handlePIDRequest(const String &request)
         //     return;
         // }
 
-        // Default response to any other supported PID request - returns an unmodified mock sensor value
+        // Default response for any other supported PID request - returns an unmodified mock sensor value
         else
         {
             ELMulator.writePidResponse(request, responseBytes[pidCode], ELMulator.getMockSensorValue());

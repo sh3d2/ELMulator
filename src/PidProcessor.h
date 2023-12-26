@@ -1,7 +1,3 @@
-//
-// Created by dragon on 12-05-2016.
-//
-
 #ifndef ELMulator_PIDPROCESSOR_H
 #define ELMulator_PIDPROCESSOR_H
 
@@ -11,40 +7,38 @@
 #include "OBDSerialComm.h"
 #include "definitions.h"
 
-
-class PidProcessor {
+class PidProcessor
+{
 
 public:
-
     PidProcessor(OBDSerialComm *connection);
 
-    bool process(String& string);
+    bool process(String &string);
 
     bool registerMode01Pid(uint32_t pid);
 
-    bool registerMode01MILResponse(const String& response);
+    bool registerMode01MILResponse(const String &response);
 
-    bool registerMode03Response(const String& response);
+    bool registerMode03Response(const String &response);
 
-    void writePidResponse(const String& requestPid, uint8_t numberOfBytes, uint32_t value);
+    void writePidResponse(const String &requestPid, uint8_t numberOfBytes, uint32_t value);
 
     uint8_t getPidCodeFromHex(uint16_t hexCommand);
-    uint8_t getPidCodeFromRequest(const String& command);
+    uint8_t getPidCodeFromRequest(const String &command);
 
-    bool isMode01(const String& command);
-    bool isMode03(const String& command);
-    bool isMode01MIL(const String& command);
+    bool isMode01(const String &command);
+    bool isMode03(const String &command);
+    bool isMode01MIL(const String &command);
 
 private:
-
     OBDSerialComm *_connection;
-    
+
     uint32_t pidMode01Supported[N_MODE01_INTERVALS];
- 
+
     bool isSupportedPidRequest(uint8_t pid);
 
     uint32_t getSupportedPids(uint8_t pidcode);
-  
+
     uint8_t getPidIntervalId(uint8_t pidcode);
 
     uint8_t getPidIntervalIndex(uint8_t pidcode);
@@ -55,12 +49,9 @@ private:
 
     String convertToPidResponse(String pid);
 
-    void getFormattedResponse(char *response, uint8_t totalNumberOfChars, const String& pid, uint32_t value);
+    void getFormattedResponse(char *response, uint8_t totalNumberOfChars, const String &pid, uint32_t value);
 
     void resetPidMode01Array();
-
-
 };
 
-
-#endif //ELMulator_PIDPROCESSOR_H
+#endif // ELMulator_PIDPROCESSOR_H

@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 
-// extern HardwareSerial Serial;
+// true == We are running on hardware that has builtin Bluetooth
+// false == We are using hardware that has BT module attached via GPIO pins
+#define BLUETOOTH_BUILTIN true  
 
 #define DO_DEBUG true
 #define DEBUG(x) do {if (DO_DEBUG) { Serial.println(x); } } while (0)
@@ -16,7 +18,7 @@
 
 // Device ID
 #define ID  "ELM327 - ELMulator V1.0.0"
-#define DESC  "ELMulator OBD2 Arduino libs, based on ELM327"
+#define DESC  "ELMulator OBD2 Arduino library, based on ELM327 protocol"
 #define PROTOCOL "6" // canbus 500k 11 bit protocol id for elm.
 
 // Char representing end of serial string
@@ -276,7 +278,7 @@ const char * const WARM_START                 = "AT WS";       // General
 const char * const RESET_ALL                  = "AT Z";        // General
 
 
-static const uint8_t responseBytes[0xA9] =
+const uint8_t responseBytes[0xA9] =
 {
     4, 4, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2,
     4, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 2, 2, 4, 4, 4, 4, 4, 4, 4, 4, 2, 2, 2, 2,

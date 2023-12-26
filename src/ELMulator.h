@@ -7,13 +7,13 @@
 #include "PidProcessor.h"
 #include "definitions.h"
 
-class ELMulator {
+class ELMulator
+{
 
 public:
-
     /**
-     * When creating a new instance of ELMulator,
-     * it needs to set the Bluetooth serial parameter's
+     * When creating a new instance of ELMulator with an attached
+     * BT module, we need to set the Bluetooth serial parameters
      *
      * @param baudRate - rate for bluetooth serial port (normally 9600)
      * @param rxPin - the Arduino RX pin for the Bluetooth module (serial port)
@@ -26,8 +26,7 @@ public:
 
     ~ELMulator();
 
-
-    void init(const String& deviceName, const bool registerPids = false);
+    void init(const String &deviceName, const bool registerPids = false);
 
     /**
      * Waits and Reads a request from OBD client software (example: torque)
@@ -65,9 +64,9 @@ public:
      */
     bool registerMode01Pid(uint32_t pidHexId);
 
-    bool registerMode01MILResponse(const String& response);
-    
-    bool registerMode03Response(const String& response);
+    bool registerMode01MILResponse(const String &response);
+
+    bool registerMode03Response(const String &response);
 
     uint8_t getPidCodeOnly(uint16_t hexCommand);
 
@@ -90,25 +89,24 @@ public:
      *                  lib will convert it to HEX
      *                  with the appropriated number of HEX chars (numberOfChars)
      */
-    void writePidResponse(const String& requestPid, uint8_t numberOfBytes, uint32_t value);
+    void writePidResponse(const String &requestPid, uint8_t numberOfBytes, uint32_t value);
 
     // Write the response back to the requestor without PID formatting, etc
     // Just pass the response string on. Useful for testing with a specific response
     // that has been pre-configured.
-    void writeResponse(const String& response);
+    void writeResponse(const String &response);
 
-    bool isMode01(const String& command);
-    bool isMode03(const String& command);
-    bool isMode01MIL(const String& command);
-    
-    uint8_t getPidCode(const String& request);
+    bool isMode01(const String &command);
+    bool isMode03(const String &command);
+    bool isMode01MIL(const String &command);
+
+    uint8_t getPidCode(const String &request);
     void registerAllMode01Pids();
     uint32_t getMockSensorValue();
 
     String elmRequest;
 
 private:
-
     OBDSerialComm *_connection;
 
     ATCommands *_atProcessor;
@@ -118,10 +116,10 @@ private:
     String _lastCommand;
 
     bool isCycleUp = true;
-    
+
     uint32_t cycle = 0;
 
-    bool processRequest(String& command);
+    bool processRequest(String &command);
 
     bool isValidHex(const char *pid);
 };

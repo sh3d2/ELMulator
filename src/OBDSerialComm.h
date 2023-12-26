@@ -2,49 +2,50 @@
 #define ELMulator_OBDSerialComm_h
 
 #include <Arduino.h>
+#include "definitions.h"
 
-#define BLUETOOTH 1
-#ifndef BLUETOOTH
-    #include <SoftwareSerial.h>
+#ifndef BLUETOOTH_BUILTIN
+#include <SoftwareSerial.h>
 #else
-    #include <BluetoothSerial.h>
+#include <BluetoothSerial.h>
 #endif
 
-
-class OBDSerialComm {         
+class OBDSerialComm
+{
 public:
-    // ODB parameters
-    enum STATUS {
-        IDLE = 0, READY = 1
+    enum STATUS
+    {
+        IDLE = 0,
+        READY = 1
     };
 
+#ifndef BLUETOOTH // Bluetooth is not built in, we are using a BT module via GPIO
     OBDSerialComm(uint32_t baudRate, uint8_t rxPin, uint8_t txPin);
+#endif
 
     OBDSerialComm();
 
     ~OBDSerialComm();
 
-    void init(const String& deviceName);
-    
+    void init(const String &deviceName);
+
     void writeEndOK();
 
     void writeEndERROR();
 
-	/**
-	* example no response in time from command send from elm to ECU, respond no data to user
-	*/
+    /**
+     * Response for unsupported PID command or missing sensor, respond "NO DATA".
+     */
     void writeEndNoData();
 
     /**
-     * incomplete command, input not understand and no action taken
-     * respond to:  incomplete messages, incorrect AT or invalid HEX digit
+     * Response for invalid AT command, or invalid PID or other bad input, respond "?"
      */
     void writeEndUnknown();
 
-
     void setToDefaults();
 
-    void readData(String& rxData);
+    void readData(String &rxData);
 
     void writeTo(uint8_t cChar);
 
@@ -69,10 +70,9 @@ public:
     void writeEndPidTo(char const *string);
 
 private:
-
     uint32_t baudRate; // Serial Baud Rate
-    STATUS status; // Operation status
-    bool echoEnable; // echoEnable command after received
+    STATUS status;     // Operation status
+    bool echoEnable;   // echoEnable command after received
     bool lineFeedEnable;
     bool memoryEnabled;
     bool whiteSpacesEnabled;
@@ -83,13 +83,12 @@ private:
     long getBaudRate();
 
     void addSpacesToResponse(const char *response, char string[]);
+
 #ifndef BLUETOOTH
     SoftwareSerial *serial; // lib to communicate with bluetooth
 #else
     BluetoothSerial *serial;
 #endif
-
 };
-
 
 #endif
