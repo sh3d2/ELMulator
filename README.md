@@ -66,7 +66,7 @@ void loop() {}
 
 That's it. Complile and install the program on an inexpensive ESP32 dev board and you can be running in a couple of minutes. You can connect your app or device to the Bluetooth device "ELMULATOR" and query it as though it were an ELM327 adapter connected to a vehicle. Very handy for testing, without the need to install and configure a physical adapter attached to an actual vehicle. 
 
-###Custom ELM327-compatible programs/devices
+### Custom ELM327-compatible programs/devices
 
 You can also use ELMulator to provide custom responses to specific queries or as the basis for your own device that reads physical sensors and provides sensor data via the OBDII / ELM327 protocols. This example code shows responding to PID requests with hardcoded values, custom sensor data and mock sensor values to demonstrate some of the possibilities for creating your ELM327 compatible application or device. 
 
