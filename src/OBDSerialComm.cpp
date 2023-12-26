@@ -10,7 +10,7 @@ OBDSerialComm::~OBDSerialComm() {
     operator delete(serial);
 }
 
-void OBDSerialComm::init(String deviceName) {
+void OBDSerialComm::init(const String& deviceName) {
     Serial.println("Starting BT . . .");
     serial = new BluetoothSerial();
     //delay(2000);
@@ -86,13 +86,13 @@ void OBDSerialComm::writeEndPidTo(char const *response) {
     writeEnd();
 }
 
-String OBDSerialComm::readData() {
+void OBDSerialComm::readData(String& rxData) {
     serial->flush(); // temp remove this
-    String rxData = serial->readStringUntil(SERIAL_END_CHAR);
+    rxData = serial->readStringUntil(SERIAL_END_CHAR);
     if (isEchoEnable()) {
         writeTo(rxData.c_str());
     }
-    return rxData;
+    //return rxData;
 }
 
 void OBDSerialComm::setBaudRate(uint32_t rate) {

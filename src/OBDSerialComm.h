@@ -24,7 +24,7 @@ public:
 
     ~OBDSerialComm();
 
-    void init(String deviceName);
+    void init(const String& deviceName);
     
     void writeEndOK();
 
@@ -44,7 +44,7 @@ public:
 
     void setToDefaults();
 
-    String readData();
+    void readData(String& rxData);
 
     void writeTo(uint8_t cChar);
 

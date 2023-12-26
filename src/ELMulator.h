@@ -27,7 +27,7 @@ public:
     ~ELMulator();
 
 
-    void init(String deviceName);
+    void init(const String& deviceName, const bool registerPids = false);
 
     /**
      * Waits and Reads a request from OBD client software (example: torque)
@@ -43,7 +43,9 @@ public:
      *
      * @return the request PID (Vehicle speed ex:  010D )
      */
-    String readPidRequest();
+    bool readELMRequest();
+    void sendELMResponse();
+    void begin();
 
     /**
      * Registry the PID's (sensors) your arduino will support.
@@ -63,9 +65,9 @@ public:
      */
     bool registerMode01Pid(uint32_t pidHexId);
 
-    bool registerMode01MILResponse(String response);
+    bool registerMode01MILResponse(const String& response);
     
-    bool registerMode03Response(String response);
+    bool registerMode03Response(const String& response);
 
     uint8_t getPidCodeOnly(uint16_t hexCommand);
 
@@ -88,12 +90,22 @@ public:
      *                  lib will convert it to HEX
      *                  with the appropriated number of HEX chars (numberOfChars)
      */
-    void writePidResponse(String requestPid, uint8_t numberOfBytes, uint32_t value);
+    void writePidResponse(const String& requestPid, uint8_t numberOfBytes, uint32_t value);
 
     // Write the response back to the requestor without PID formatting, etc
     // Just pass the response string on. Useful for testing with a specific response
     // that has been pre-configured.
-    void writeResponse(String response);
+    void writeResponse(const String& response);
+
+    bool isMode01(const String& command);
+    bool isMode03(const String& command);
+    bool isMode01MIL(const String& command);
+    
+    uint8_t getPidCode(const String& request);
+    void registerAllMode01Pids();
+    uint32_t getMockSensorValue();
+
+    String elmRequest;
 
 private:
 
@@ -105,7 +117,11 @@ private:
 
     String _lastCommand;
 
-    bool processRequest(String command);
+    bool isCycleUp = true;
+    
+    uint32_t cycle = 0;
+
+    bool processRequest(String& command);
 
     bool isValidHex(const char *pid);
 };

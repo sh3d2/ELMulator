@@ -5,17 +5,23 @@ PidProcessor::PidProcessor(OBDSerialComm *connection) {
     resetPidMode01Array();
 };
 
-bool PidProcessor::process(String command) {
+bool PidProcessor::process(String& command) {
     bool processed = false;
+    
+    if (command.length() > 4)
+    {
+        command = command.substring(0, 4); // remove num_responses value if present; lib only handles single responses
+    }
+
     if (!isMode01(command))
     {
+        _connection->writeEndNoData();
         return false;
     }
-    
-    command = command.substring(0,3); //remove any num_responses values. Multiple responses not supported.
+
     uint16_t hexCommand = strtoul(command.c_str(), NULL, HEX);
-    uint8_t pid = getPidCodeOnly(hexCommand);
-    if (isSupportedPidRequest(pid)) {
+    uint8_t pid = getPidCodeFromHex(hexCommand);
+    if (isSupportedPidRequest(pid)) {   //reqeust to return a list of valid PIDs we can respond to 
         processed = true;
         uint32_t supportedPids = getSupportedPids(pid);
         writePidResponse(command, 4, supportedPids);
@@ -23,7 +29,7 @@ bool PidProcessor::process(String command) {
     return processed;
 }
 
-void PidProcessor::writePidResponse(String requestPid, uint8_t numberOfBytes, uint32_t value) {
+void PidProcessor::writePidResponse(const String& requestPid, uint8_t numberOfBytes, uint32_t value) {
     uint8_t  nHexChars = PID_N_BYTES * N_CHARS_IN_BYTE +  numberOfBytes * N_CHARS_IN_BYTE ;
     char responseArray[nHexChars + 1]; // one more for termination char
     getFormattedResponse(responseArray, nHexChars, requestPid, value);
@@ -37,7 +43,7 @@ bool PidProcessor::registerMode01Pid(uint32_t pid) {
     // pid must be off type 01
     if (pid > 0x00 && pid < 0x0200) {
         // remove PidMode, only use pid code
-        pid = getPidCodeOnly(pid);
+        pid = getPidCodeFromHex(pid);
         setPidBit(pid);
 
         char buffer[4];
@@ -48,9 +54,21 @@ bool PidProcessor::registerMode01Pid(uint32_t pid) {
     return false;
 }
 
-bool PidProcessor::isMode01(String command) {
+bool PidProcessor::isMode01(const String& command) 
+{
     return command.startsWith("01") ? true : false;
 }
+
+bool PidProcessor::isMode03(const String& command)
+{
+    return command.startsWith("03") ? true : false;
+}
+
+bool PidProcessor::isMode01MIL(const String& command)
+{
+    return command.startsWith("0101") ? true : false;
+}
+
 
 /**
  *  return true if:
@@ -82,13 +100,23 @@ uint8_t PidProcessor::getPidIntervalIndex(uint8_t pidcode) {
  * Receives a mode pid ex 010C ,
  * returns only the pid ex 0C
  */
-uint8_t PidProcessor::getPidCodeOnly(uint16_t hexCommand) {
+uint8_t PidProcessor::getPidCodeFromHex(uint16_t hexCommand) {
 
     if (hexCommand >= 0x0100) {
         hexCommand -= 0x100;
     }
     return (uint8_t) hexCommand; // return only the lower 8 bits (trim off num_messages or other extra bytes if present)
 }
+
+/**
+ * Receives a complete PID request, 
+ * returns only the pid ex 0C
+ */
+uint8_t PidProcessor::getPidCodeFromRequest(const String& request) {
+    uint16_t hexCommand = strtoul(request.c_str(), NULL, HEX);
+    return getPidCodeFromHex(hexCommand);
+}
+
 
 void PidProcessor::setPidBit(uint8_t pid) {
     uint8_t arrayIndex = getPidIntervalIndex(pid);
@@ -122,7 +150,7 @@ uint32_t PidProcessor:: getSupportedPids(uint8_t pid) {
     return pidMode01Supported[index];
 }
 
-void PidProcessor::getFormattedResponse(char *response, uint8_t totalNumberOfChars, String pid, uint32_t value) {
+void PidProcessor::getFormattedResponse(char *response, uint8_t totalNumberOfChars, const String& pid, uint32_t value) {
     uint8_t nValueChars = totalNumberOfChars - PID_N_BYTES * N_CHARS_IN_BYTE;
     char cValue[3] = {0};
     itoa(nValueChars, cValue, DEC);

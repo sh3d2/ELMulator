@@ -13,7 +13,7 @@ public:
 
     ~ATCommands();
 
-    bool process(String string);
+    bool process(const String& string);
 
 private:
 
@@ -26,19 +26,19 @@ private:
 
     void ATI();
 
-    void ATEx(String x);
+    void ATEx(String& x);
 
-    void ATMx(String x);
+    void ATMx(String& x);
 
-    void ATLx(String x);
+    void ATLx(String& x);
 
-    void ATSx(String x);
+    void ATSx(String& x);
 
-    void ATHx(String x);
+    void ATHx(String& x);
 
-    void ATSPx(String x);
+    void ATSPx(String& x);
 
-    void ATATx(String cmd);
+    void ATATx(String& cmd);
 
     void ATPC();
 
@@ -46,9 +46,9 @@ private:
 
     void ATDESC();
 
-    void processCommand(String command);
+    void processCommand(const String& command);
 
-    bool isATCommand(String command);
+    bool isATCommand(const String& command);
 
 };
 

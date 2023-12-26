@@ -26,6 +26,7 @@
 const uint8_t maxPid = 0xFF;
 const uint8_t N_MODE01_INTERVALS = 7;
 const uint8_t PID_INTERVAL_OFFSET = 0x20;
+const uint8_t MAX_REQUEST_SIZE = 40;
 
 
 //-------------------------------------------------------------------------------------//
