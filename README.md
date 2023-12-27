@@ -208,16 +208,16 @@ void handlePIDRequest(const String &request)
 ```
 ## Using ELMulator with an addon Bluetooth module (GPIO)
 
-By default, ELMulator will work on an EPS32 with builtin Bluetooth, but you can configure another device type for use with a bluetooth module like the [HC05 Bluetooth Module](https://components101.com/wireless/hc-05-bluetooth-module)connected via GPIO and using SoftwareSerial.h library. To do so, the following two changes need to be made:
+By default, ELMulator will work on an EPS32 with builtin Bluetooth, but you can configure another device type for use with a bluetooth module like the [HC05 Bluetooth Module](https://components101.com/wireless/hc-05-bluetooth-module) connected via GPIO and using SoftwareSerial.h library. To do so, the following two changes need to be made:
 
 1. Update definitions.h file and undefine or set to false "BLUETOOTH_BUILTIN":
 
 ```
-// true == We are running on hardware that has builtin Bluetooth
-// false == We are using hardware that has BT module attached via GPIO pins
+// true == We are using hardware that has builtin Bluetooth
+// false == We are using hardware with a Bluetooth module attached via GPIO pins
 #define BLUETOOTH_BUILTIN true  
 ```
-2. Provide the serial baud rate, Rx an Tx pin numbers when creating your ELMulator instance:
+2. Provide the serial baud rate, Rx and Tx pin numbers when creating your ELMulator instance:
 
 ```
 /**
