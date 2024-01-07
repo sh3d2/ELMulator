@@ -40,7 +40,7 @@ You need to understand what a PID is and how it is defined (mode, pid, number of
 
 ### Easily create an ELM327 emulator with just a few lines of code:
 
-```
+```C
 #include "ESP32_Simple_ELMulator.h"
 
 /**
@@ -70,7 +70,7 @@ That's it. Complile and install the program on an inexpensive ESP32 dev board an
 
 You can also use ELMulator to provide custom responses to specific queries or as the basis for your own device that reads physical sensors and provides sensor data via the OBDII / ELM327 protocols. This example code shows responding to PID requests with hardcoded values, custom sensor data and mock sensor values to demonstrate some of the possibilities for creating your ELM327 compatible application or device. 
 
-```
+```C
 #include "ESP32_Custom_ELMulator.h"
 
 const String deviceName = "ELMULATOR"; // Bluetooth device name to use (no pin)
