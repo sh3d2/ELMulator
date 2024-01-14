@@ -45,6 +45,8 @@ private:
 
     void ATDESC();
 
+    void ATRV();
+
     void processCommand(const String &command);
 
     bool isATCommand(const String &command);

@@ -58,6 +58,9 @@ void ATCommands::processCommand(const String& command) {
         ATCommands::ATDESC();
     } else if (specificCommand.startsWith("PC")) {
         ATCommands::ATPC();
+    } else if (specificCommand.startsWith("RV")){
+        ATCommands::ATRV();
+    }
     } else {
 
         // lets assume we process any at command
@@ -143,6 +146,11 @@ void ATCommands::ATATx(String& cmd) {
 
 // Terminates current diagnostic session. Protocol close
 void ATCommands::ATPC() {
+    connection->writeEndOK();
+}
+
+void ATCommands::ATRV() {
+    connection->writeTo("13.5V");
     connection->writeEndOK();
 }
 
