@@ -60,7 +60,6 @@ void ATCommands::processCommand(const String& command) {
         ATCommands::ATPC();
     } else if (specificCommand.startsWith("RV")){
         ATCommands::ATRV();
-    }
     } else {
 
         // lets assume we process any at command
@@ -150,8 +149,8 @@ void ATCommands::ATPC() {
 }
 
 void ATCommands::ATRV() {
-    connection->writeTo("13.5V");
-    connection->writeEndOK();
+    connection->writeTo("AT RV\r13.5V");
+    connection->writeEnd();
 }
 
 // return true ir connectionand is AT

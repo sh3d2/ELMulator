@@ -84,7 +84,7 @@ private:
 
     void addSpacesToResponse(const char *response, char string[]);
 
-#ifndef BLUETOOTH
+#ifndef BLUETOOTH_BUILTIN
     SoftwareSerial *serial; // lib to communicate with bluetooth
 #else
     BluetoothSerial *serial;
