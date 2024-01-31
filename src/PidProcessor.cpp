@@ -13,7 +13,7 @@ bool PidProcessor::process(String& command) {
         command = command.substring(0, 4); // remove num_responses value if present; lib only handles single responses
     }
 
-    if (!isMode01(command))
+    if (!isMode01(command) & !isMode22(command))
     {
         _connection->writeEndNoData();
         return false;
@@ -59,14 +59,19 @@ bool PidProcessor::isMode01(const String& command)
     return command.startsWith("01") ? true : false;
 }
 
+bool PidProcessor::isMode01MIL(const String& command)
+{
+    return command.startsWith("0101") ? true : false;
+}
+
 bool PidProcessor::isMode03(const String& command)
 {
     return command.startsWith("03") ? true : false;
 }
 
-bool PidProcessor::isMode01MIL(const String& command)
+bool PidProcessor::isMode22(const String& command)
 {
-    return command.startsWith("0101") ? true : false;
+    return command.startsWith("22") ? true : false;
 }
 
 

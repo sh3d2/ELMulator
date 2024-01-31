@@ -169,6 +169,11 @@ bool ELMulator::isMode01(const String &command)
     return _pidProcessor->isMode01(command);
 }
 
+bool ELMulator::isMode22(const String &command)
+{
+    return _pidProcessor->isMode22(command);
+}
+
 bool ELMulator::isMode03(const String &command)
 {
     return _pidProcessor->isMode03(command);

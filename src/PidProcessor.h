@@ -27,8 +27,9 @@ public:
     uint8_t getPidCodeFromRequest(const String &command);
 
     bool isMode01(const String &command);
-    bool isMode03(const String &command);
     bool isMode01MIL(const String &command);
+    bool isMode03(const String &command);
+    bool isMode22(const String &command);
 
 private:
     OBDSerialComm *_connection;

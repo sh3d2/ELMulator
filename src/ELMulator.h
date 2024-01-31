@@ -99,6 +99,7 @@ public:
     bool isMode01(const String &command);
     bool isMode03(const String &command);
     bool isMode01MIL(const String &command);
+    bool isMode22(const String &command);
 
     uint8_t getPidCode(const String &request);
     void registerAllMode01Pids();
