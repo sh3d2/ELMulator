@@ -7,6 +7,7 @@ const String milResponse = "4101830000";                       // MIL response c
 const String dtcResponse = "43010341\r\n43010123\r\n43010420"; // DTC response returning 3 DTC codes (multiline response)
 const uint32_t odoResponse = 1234567;                          // Hardcode an odometer reading of 1234567
 const String ethPercentResponse = "620052C6";
+const String dpfCloggingResponse = "6218E4C6";
 
 ELMulator ELMulator;
 
@@ -14,7 +15,7 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("Starting ELMulator...");
-    ELMulator.init(deviceName); 
+    ELMulator.init(deviceName);
 
     // Register the specific PIDs we are going to handle.
     // ELMulator will respond to SUPPORTED_PIDS request ("0101") with the appropriate value
@@ -82,23 +83,47 @@ void handlePIDRequest(const String &request)
         }
     }
 
+    else if (ELMulator.isMode22(request)) // Mode 0x22 (extended info) service - Mfg-dependent and not defined in OBDII spec
+    {
+        
+        Serial.print("Mode 22 PID: "); Serial.println(request.substring(2));
+
+        if (request.substring(2).compareTo("52") == 0) // Ethanol percent
+        {
+            if (ethPercentResponse.length())
+            {
+                ELMulator.writeResponse(ethPercentResponse);
+                return;
+            }
+            else
+            {
+                DEBUG("ETH % response is empty.");
+                ELMulator.writePidNotSupported();
+                return;
+            }
+        }
+
+        if (request.substring(2).compareTo("18E4") == 0) // DPF Clogging A-R Giulia
+        {
+            if (dpfCloggingResponse.length())
+            {
+                ELMulator.writeResponse(dpfCloggingResponse);
+                return;
+            }
+            else
+            {
+                DEBUG("DPF Clogging response is empty.");
+                ELMulator.writePidNotSupported();
+                return;
+            }
+        }
+        ELMulator.writePidNotSupported();
+        return;
+    }
     else // Handle any other supported PID request
     {
         uint8_t pidCode = ELMulator.getPidCode(request); // Extract the specific PID code from the request
 
-        if (pidCode == 0x52) // Ethanol percent (mode 0x22)
-        if (ethPercentResponse.length())
-        {
-            ELMulator.writeResponse(ethPercentResponse);
-            return;
-        }
-        else
-        {
-            DEBUG("ETH % response is empty.");
-            ELMulator.writePidNotSupported();
-            return;
-        }
-        
         // Example response for 0x05 (Engine Coolant Temp) - returning a mock data value
         if (pidCode == ENGINE_COOLANT_TEMP)
         {
