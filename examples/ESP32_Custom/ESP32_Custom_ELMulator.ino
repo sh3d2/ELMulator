@@ -6,6 +6,7 @@ const String deviceName = "ELMULATOR"; // Bluetooth device name to use (no pin)
 const String milResponse = "4101830000";                       // MIL response code indicating 3 current DTC
 const String dtcResponse = "43010341\r\n43010123\r\n43010420"; // DTC response returning 3 DTC codes (multiline response)
 const uint32_t odoResponse = 1234567;                          // Hardcode an odometer reading of 1234567
+const String ethPercentResponse = "620052C6";
 
 ELMulator ELMulator;
 
@@ -85,6 +86,19 @@ void handlePIDRequest(const String &request)
     {
         uint8_t pidCode = ELMulator.getPidCode(request); // Extract the specific PID code from the request
 
+        if (pidCode == 0x52) // Ethanol percent (mode 0x22)
+        if (ethPercentResponse.length())
+        {
+            ELMulator.writeResponse(ethPercentResponse);
+            return;
+        }
+        else
+        {
+            DEBUG("ETH % response is empty.");
+            ELMulator.writePidNotSupported();
+            return;
+        }
+        
         // Example response for 0x05 (Engine Coolant Temp) - returning a mock data value
         if (pidCode == ENGINE_COOLANT_TEMP)
         {
