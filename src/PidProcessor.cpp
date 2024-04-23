@@ -1,9 +1,17 @@
 #include "PidProcessor.h"
 
+#if USE_WIFI
+PidProcessor::PidProcessor(OBDWiFiComm *connection) {
+    _connection = connection;
+    resetPidMode01Array();
+};
+#else
 PidProcessor::PidProcessor(OBDSerialComm *connection) {
     _connection = connection;
     resetPidMode01Array();
 };
+#endif
+
 
 bool PidProcessor::process(String& command) {
     bool processed = false;

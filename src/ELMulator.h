@@ -2,7 +2,14 @@
 #define ELMulator_ELMulator_h
 
 #include <Arduino.h>
+#include "definitions.h"
+
+#if USE_WIFI
+#include "OBDWiFiComm.h"
+#else
 #include "OBDSerialComm.h"
+#endif
+
 #include "ATCommands.h"
 #include "PidProcessor.h"
 #include "definitions.h"
@@ -108,8 +115,11 @@ public:
     String elmRequest;
 
 private:
+#if USE_WIFI
+    OBDWiFiComm *_connection;
+#else
     OBDSerialComm *_connection;
-
+#endif
     ATCommands *_atProcessor;
 
     PidProcessor *_pidProcessor;

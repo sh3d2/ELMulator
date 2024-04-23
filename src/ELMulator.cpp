@@ -1,5 +1,16 @@
 #include "ELMulator.h"
 
+#if USE_WIFI
+ELMulator::ELMulator()
+{
+    _connection = new OBDWiFiComm();
+    _atProcessor = new ATCommands(_connection);
+    _pidProcessor = new PidProcessor(_connection);
+    _lastCommand = "";
+    elmRequest.reserve(MAX_REQUEST_SIZE);
+    elmRequest = "";
+}
+#else
 ELMulator::ELMulator(uint32_t baudRate, uint8_t rxPin, uint8_t txPin)
 {
     _connection = new OBDSerialComm(baudRate, rxPin, txPin);
@@ -9,16 +20,9 @@ ELMulator::ELMulator(uint32_t baudRate, uint8_t rxPin, uint8_t txPin)
     elmRequest.reserve(MAX_REQUEST_SIZE);
     elmRequest = "";
 }
+#endif
 
-ELMulator::ELMulator()
-{
-    _connection = new OBDSerialComm();
-    _atProcessor = new ATCommands(_connection);
-    _pidProcessor = new PidProcessor(_connection);
-    _lastCommand = "";
-    elmRequest.reserve(MAX_REQUEST_SIZE);
-    elmRequest = "";
-}
+
 
 ELMulator::~ELMulator() {}
 

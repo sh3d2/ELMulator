@@ -7,6 +7,8 @@
 // false == We are using hardware that has BT module attached via GPIO pins
 #define BLUETOOTH_BUILTIN true  
 
+#define USE_WIFI true
+
 #define DO_DEBUG true
 #define DEBUG(x) do {if (DO_DEBUG) { Serial.println(x); } } while (0)
 
@@ -24,6 +26,8 @@
 // Char representing end of serial string
 #define SERIAL_END_CHAR  0x0D
 #define SERIAL_READ_TIMEOUT 20000L
+
+#define WIFI_END_CHAR 0x0A
 
 const uint8_t maxPid = 0xFF;
 const uint8_t N_MODE01_INTERVALS = 7;

@@ -1,9 +1,15 @@
 #include "ATCommands.h"
+#include "definitions.h"
 
-
+#if USE_WIFI
+ATCommands::ATCommands(OBDWiFiComm *connection) {
+    this->connection = connection;
+}
+#else
 ATCommands::ATCommands(OBDSerialComm *connection) {
     this->connection = connection;
 }
+#endif
 
 ATCommands::~ATCommands() {
     operator delete(this->connection);
@@ -70,17 +76,12 @@ void ATCommands::processCommand(const String& command) {
 // set all to defaults
 void ATCommands::ATD() {
     connection->setToDefaults();
-    connection->writeTo("BUS INIT: ...");
     connection->writeEndOK();
-
 }
-
 
 // reset all
 void ATCommands::ATZ() {
-    connection->setEcho(true);
-    connection->setStatus(connection->IDLE);
-    connection->writeTo(ID);
+    connection->setToDefaults();
     connection->writeEndOK();
 }
 

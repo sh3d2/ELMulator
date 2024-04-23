@@ -1,18 +1,19 @@
 #ifndef ELMulator_PIDPROCESSOR_H
 #define ELMulator_PIDPROCESSOR_H
 
+#include "definitions.h"
 #include <Arduino.h>
 #include <WString.h>
 #include <Print.h>
+#include "OBDWiFiComm.h"
 #include "OBDSerialComm.h"
-#include "definitions.h"
 
 class PidProcessor
 {
 
 public:
+    PidProcessor(OBDWiFiComm *connection);
     PidProcessor(OBDSerialComm *connection);
-
     bool process(String &string);
 
     bool registerMode01Pid(uint32_t pid);
@@ -32,8 +33,11 @@ public:
     bool isMode22(const String &command);
 
 private:
+#if USE_WIFI
+    OBDWiFiComm *_connection;
+#else
     OBDSerialComm *_connection;
-
+#endif
     uint32_t pidMode01Supported[N_MODE01_INTERVALS];
 
     bool isSupportedPidRequest(uint8_t pid);

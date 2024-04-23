@@ -1,13 +1,13 @@
-#ifndef ELMulator_OBDSerialComm_h
-#define ELMulator_OBDSerialComm_h
+#ifndef ELMulator_OBDWiFiComm_h
+#define ELMulator_OBDWiFiComm_h
 
 #include <Arduino.h>
+#include <WiFi.h>
+#include <WiFiServer.h>
 #include "definitions.h"
 
-#include <BluetoothSerial.h>
 
-
-class OBDSerialComm
+class OBDWiFiComm
 {
 public:
     enum STATUS
@@ -16,12 +16,9 @@ public:
         READY = 1
     };
 
-// // Bluetooth is not built in, we are using a BT module via GPIO
-//     OBDSerialComm(uint32_t baudRate, uint8_t rxPin, uint8_t txPin);
+    OBDWiFiComm();
 
-    OBDSerialComm();
-
-    ~OBDSerialComm();
+    ~OBDWiFiComm();
 
     void init(const String &deviceName);
 
@@ -66,7 +63,6 @@ public:
     void writeEndPidTo(char const *string);
 
 private:
-    uint32_t baudRate; // Serial Baud Rate
     STATUS status;     // Operation status
     bool echoEnable;   // echoEnable command after received
     bool lineFeedEnable;
@@ -74,17 +70,9 @@ private:
     bool whiteSpacesEnabled;
     bool headersEnabled;
 
-    void setBaudRate(uint32_t rate);
-
-    long getBaudRate();
-
     void addSpacesToResponse(const char *response, char string[]);
 
-#ifndef BLUETOOTH_BUILTIN
-    HardwareSerial *serial; // lib to communicate with bluetooth
-#else
-    BluetoothSerial *serial;
-#endif
+    WiFiClient client;
 };
 
 #endif

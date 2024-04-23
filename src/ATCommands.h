@@ -2,23 +2,33 @@
 #define ELMulator_ATCommands_h
 
 #include <Arduino.h>
-#include "OBDSerialComm.h"
 #include "definitions.h"
+#if USE_WIFI
+#include "OBDWiFiComm.h"
+#else
+#include "OBDSerialComm.h"
+#endif
 
 class ATCommands
 {
 
 public:
+#if USE_WIFI
+    ATCommands(OBDWiFiComm *connection);
+#else
     ATCommands(OBDSerialComm *connection);
-
+#endif
     ~ATCommands();
 
     bool process(const String &string);
 
 private:
     // Variables
+#if USE_WIFI
+    OBDWiFiComm *connection;
+#else
     OBDSerialComm *connection;
-
+#endif
     void ATD();
 
     void ATZ();
