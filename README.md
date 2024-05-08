@@ -7,10 +7,11 @@ This is a fork of the [GTTurboEcu library by TheBigBadWolfClub](https://github.c
 I have updated the library with the following changes:
 - included fixes submitted to the upstream fork but never merged
 - updated the library to work with Bluetooth serial devices (like esp32)
+- added support for connecting via WiFi (default port 30000)
 - added additional functions to the emulator
 - optimized the use of String class for lower memory requirements
 - fixed a few bugs from earlier version
-- refactoring many methods to simplify use of the library  
+- refactored many methods to simplify use of the library  
 - made it easier to add your own new functions with sample/test data
 - implemented a simple emulation mode that can be easily configured with just a few lines of code 
 - added new example programs to demonstrate use of the library 
