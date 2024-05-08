@@ -82,12 +82,12 @@ void ATCommands::ATD() {
 // reset all
 void ATCommands::ATZ() {
     connection->setToDefaults();
+    connection->writeTo(ID);
     connection->writeEndOK();
 }
 
 // Print the version ID
 void ATCommands::ATI() {
-    connection->setStatus(connection->READY);
     connection->writeTo(ID);
     connection->writeEndOK();
 }

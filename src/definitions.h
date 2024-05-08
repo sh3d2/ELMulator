@@ -7,7 +7,7 @@
 // false == We are using hardware that has BT module attached via GPIO pins
 #define BLUETOOTH_BUILTIN true  
 
-#define USE_WIFI true
+#define USE_WIFI false
 
 #define DO_DEBUG true
 #define DEBUG(x) do {if (DO_DEBUG) { Serial.println(x); } } while (0)
@@ -19,7 +19,7 @@
 #define N_CHARS_IN_BYTE 2
 
 // Device ID
-#define ID  "ELM327 - ELMulator V1.0.0"
+#define ID  "ELM327 / ELMulator V1.3.0"
 #define DESC  "ELMulator OBD2 Arduino library, based on ELM327 protocol"
 #define PROTOCOL "6" // canbus 500k 11 bit protocol id for elm.
 
