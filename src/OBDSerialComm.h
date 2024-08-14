@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "definitions.h"
 
-#include <BluetoothSerial.h>
+#include <SoftwareSerial.h>
 
 
 class OBDSerialComm
@@ -17,9 +17,9 @@ public:
     };
 
 // // Bluetooth is not built in, we are using a BT module via GPIO
-//     OBDSerialComm(uint32_t baudRate, uint8_t rxPin, uint8_t txPin);
+    OBDSerialComm(uint32_t baudRate, uint8_t rxPin, uint8_t txPin);
 
-    OBDSerialComm();
+    // OBDSerialComm(int );
 
     ~OBDSerialComm();
 
@@ -73,6 +73,7 @@ private:
     bool memoryEnabled;
     bool whiteSpacesEnabled;
     bool headersEnabled;
+    uint32_t rx, tx;
 
     void setBaudRate(uint32_t rate);
 
@@ -83,7 +84,7 @@ private:
 #ifndef BLUETOOTH_BUILTIN
     HardwareSerial *serial; // lib to communicate with bluetooth
 #else
-    BluetoothSerial *serial;
+    SoftwareSerial *serial;
 #endif
 };
 

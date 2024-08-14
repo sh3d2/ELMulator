@@ -11,9 +11,9 @@ ELMulator::ELMulator()
     elmRequest = "";
 }
 #else
-ELMulator::ELMulator()
+ELMulator::ELMulator(uint32_t baudRate, uint8_t rxPin, uint8_t txPin)
 {
-    _connection = new OBDSerialComm();
+    _connection = new OBDSerialComm(baudRate, rxPin, txPin);
     _atProcessor = new ATCommands(_connection);
     _pidProcessor = new PidProcessor(_connection);
     _lastCommand = "";
@@ -50,7 +50,8 @@ bool ELMulator::readELMRequest()
 {
     do
     {
-        elmRequest.clear(); // clear buffer from previous requests
+        // elmRequest.clear(); // clear buffer from previous requests
+        elmRequest = ""; // clear buffer from previous requests
         _connection->readData(elmRequest);
         elmRequest.toUpperCase();
         // TODO ignore spaces, and all control chars (tab, etc)

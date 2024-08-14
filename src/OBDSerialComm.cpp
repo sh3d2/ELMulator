@@ -2,7 +2,10 @@
 #include "definitions.h"
 
 
-OBDSerialComm::OBDSerialComm() {
+OBDSerialComm::OBDSerialComm(uint32_t baudRate, uint8_t rxPin, uint8_t txPin) {
+    rx = rxPin;
+    tx = txPin;
+    this->baudRate = baudRate;
     
 }
 
@@ -12,9 +15,9 @@ OBDSerialComm::~OBDSerialComm() {
 
 void OBDSerialComm::init(const String& deviceName) {
     Serial.println("Starting BT . . .");
-    serial = new BluetoothSerial();
+    serial = new SoftwareSerial(rx, tx);
     //delay(2000);
-    serial->begin(deviceName, false);
+    serial->begin(baudRate);
     setToDefaults();
 
 }

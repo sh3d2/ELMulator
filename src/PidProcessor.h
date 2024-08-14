@@ -5,14 +5,14 @@
 #include <Arduino.h>
 #include <WString.h>
 #include <Print.h>
-#include "OBDWiFiComm.h"
+// #include "OBDWiFiComm.h"
 #include "OBDSerialComm.h"
 
 class PidProcessor
 {
 
 public:
-    PidProcessor(OBDWiFiComm *connection);
+    // PidProcessor(OBDWiFiComm *connection);
     PidProcessor(OBDSerialComm *connection);
     bool process(String &string);
 
