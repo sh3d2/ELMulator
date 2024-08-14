@@ -1,3 +1,13 @@
+# Important notice
+
+this version is modified to work with arduino nano (and clones) specifically. no wifi, no builtin bt, just software serial and hc-05. 
+
+* removed bluetoothserial as dep
+* some fiddling with the constructors 
+
+
+
+
 # ELMulator
 
 ## ODBII & ELM327 Emulation library
